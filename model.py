@@ -10,7 +10,6 @@ import warnings
 
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-#device = torch.device("cpu")
 
 
 class CPF(nn.Module):
@@ -140,7 +139,7 @@ class CPF(nn.Module):
           
             gamma_l = self.linear_3(torch.cat((learning, h_tilde_pre), 1))
             gamma_l = self.sig(gamma_l)
-            LG = gamma_l * ((learning_gain + 1) / 2)  #+ F.normalize(self.sig(direct_knowledge_state), p=2, dim=-1) #+ F.normalize(self.sig(memory_matrix[:, -1, k:]), p=2, dim=-1)
+            LG = gamma_l * ((learning_gain + 1) / 2)
             LG_tilde = self.dropout(q_e.transpose(1, 2).bmm(LG.view(batch_size, 1, -1)))  + F.normalize(self.sig(direct_knowledge_state), p=2, dim=-1).unsqueeze(1).repeat(1, 103, 1)
 
        
