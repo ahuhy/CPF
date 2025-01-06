@@ -2,7 +2,7 @@ import logging
 import numpy as np
 import pandas
 from load_data import DATA
-from LPKT import LPKT
+from CPF import CPF
 import pandas as pd
 import torch
 
@@ -30,18 +30,6 @@ def generate_p_matrix(file_path, p_gamma):
                 matrix[key][i] = val ** p_gamma 
 
     return matrix
-
-""" # k-fold cross validation
-k, train_auc_sum, valid_auc_sum = 5, .0, .0
-for i in range(k):
-    lpkt = LPKT(n_at, n_it, n_exercise, n_question, d_a, d_e, d_k, q_matrix,  batch_size, dropout)
-    train_data = dat.load_data('../../data/anonymized_full_release_competition_dataset/train' + str(i) + '.txt')
-    valid_data = dat.load_data('../../data/anonymized_full_release_competition_dataset/valid' + str(i) + '.txt')
-    best_train_auc, best_valid_auc = lpkt.train(train_data, valid_data, epoch=30, lr=0.003, lr_decay_step=10)
-    print('fold %d, train auc %f, valid auc %f' % (i, best_train_auc, best_valid_auc))
-    train_auc_sum += best_train_auc
-    valid_auc_sum += best_valid_auc
-print('%d-fold validation: avg of best train auc %f, avg of best valid auc %f' % (k, train_auc_sum / k, valid_auc_sum / k)) """
 
 batch_size = 32
 n_at = 1326
@@ -75,13 +63,13 @@ train_data = dat.load_data('./data/assist2017train_va_te/train0.txt')
 valid_data = dat.load_data('./data/assist2017train_va_te/valid0.txt')
 test_data = dat.load_data('./data/assist2017train_va_te/test.txt')
 
-lpkt = LPKT(n_at, n_it, n_exercise, n_question, d_a, d_e, d_k, d_l, d_f, q_matrix, p_matrix, batch_size, dropout)
-lpkt.train(train_data, valid_data, epoch=30, lr=0.003, lr_decay_step=10)
-lpkt.load("./CPF/2017params/lpkt3.params")
-_, auc, accuracy, rmse, r2 = lpkt.eval(test_data)
+cpf = CPF(n_at, n_it, n_exercise, n_question, d_a, d_e, d_k, d_l, d_f, q_matrix, p_matrix, batch_size, dropout)
+cpf.train(train_data, valid_data, epoch=30, lr=0.003, lr_decay_step=10)
+cpf.load("./CPF/2017params/cpf3.params")
+_, auc, accuracy, rmse, r2 = cpf.eval(test_data)
 print("auc: %.6f, accuracy: %.6f,  rmse: %.6f,  r2: %.6f" % (auc, accuracy, rmse, r2))
 
-""" _, auc, accuracy, r2, rmse = lpkt.eval(test_data)
+""" _, auc, accuracy, r2, rmse = cpf.eval(test_data)
 print("auc: %.6f, accuracy: %.6f" % (auc, accuracy))
 print("r2: %.6f, rmse: %.6f" % (r2, rmse)) """
 
